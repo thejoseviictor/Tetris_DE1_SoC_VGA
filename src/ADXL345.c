@@ -12,7 +12,7 @@ volatile unsigned int* I2C0_RXFLR; // Para Verificar se Existem Dados a Receber
 Acessando a memória física do sistema
 "fd" será "-1", caso ocorra um erro na abertura do arquivo
 */
-int open_memory(void)
+void open_memory(void)
 {
     fd = open("/dev/mem", O_RDWR | O_SYNC); // "fd": file descriptor;
 }

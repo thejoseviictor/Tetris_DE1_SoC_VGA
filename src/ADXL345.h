@@ -27,7 +27,7 @@
 #define DATAX1 0x33 // Byte Mais Significativo de X
 
 // Cabeçalho das Funções:
-int open_memory(void);
+void open_memory(void);
 void I2C0_mapping(void);
 void enable_I2C0_HPS(void);
 void setting_I2C0_ADXL345(void);
