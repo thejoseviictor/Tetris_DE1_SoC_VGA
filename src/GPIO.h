@@ -7,6 +7,7 @@
 #include "jogabilidade.h"
 
 // Cabeçalho das Funções:
+void GPIO_mapping(void);
 int exibir_pontos(int pontos);
 int button();
 int* return_decomposto(int pontos);
