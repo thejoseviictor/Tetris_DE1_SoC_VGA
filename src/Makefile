@@ -1,6 +1,5 @@
 # Para o Jogo "Tetris", Problema 02, no DE1-SoC
-# Versão beta do Makefile (Atualizado em: 07/11/2024)
 
 all:
-	gcc tetris.c ADXL345.c jogabilidade.c vga.s -o tetris -std=c99
+	gcc -o tetris ADXL345.c GPIO.c jogabilidade.c tetris.c vga.s -std=c99
 	sudo ./tetris
