@@ -276,7 +276,6 @@ Nessa seção será tratada a descrição da parte gráfica, movimentação, apr
 | Item 2          | Item 2              | Item 2         |
 | Item 3          | Item 3              | Item 3         |
 
-  
 
   </div>  
 
