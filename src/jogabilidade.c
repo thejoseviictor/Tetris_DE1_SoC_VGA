@@ -16,7 +16,7 @@ int pecas[6][4][4] = {
 int indice_peca = 0;
 int coluna = 3; //Coluna no tabuleiro, posição horizontal
 int linha = 0; // linha no tabuleiro, posição vertical
-int pause = 0;
+int pausado = 0;
 /**
 * Tela inicial do jogo em uma escala menor:
 */
@@ -37,31 +37,50 @@ int game_title[5][21] = {
 * Isso garante que cada linha ocupa quatro blocos e cada coluna ocupa dois blocos.
 */
 void draw_start_screen(){
-    apagar();
-    background_color(COLOR_BLACK);
-    int screen_row = 20;
-    int screen_column = 9;
-    for(int game_title_row = 0; game_title_row < 5; game_title_row++){
-        for(int row_increment = 0; row_increment < 4; row_increment++){
-            for(int game_title_column = 0; game_title_column < 21; game_title_column++){
-                for(int column_increment = 0; column_increment < 3; column_increment++){
-                    if(game_title[game_title_row][game_title_column] == 1)
-                        background_drawing(game_title_row+screen_row+row_increment, game_title_column+screen_column+column_increment, COLOR_BLUE);
+    int color;
+    while(button() == 0){
+        int choose_color = rand() % 2;
+        apagar();
+        background_color(COLOR_BLACK);
+        int screen_row = 20;
+        int screen_column = 9;
+        for(int game_title_row = 0; game_title_row < 5; game_title_row++){
+            for(int row_increment = 0; row_increment < 4; row_increment++){
+                for(int game_title_column = 0; game_title_column < 21; game_title_column++){
+                    for(int column_increment = 0; column_increment < 3; column_increment++){
+                        if(game_title[game_title_row][game_title_column] == 1)
+                            background_drawing(game_title_row+screen_row+row_increment, game_title_column+screen_column+column_increment, color);
+                            buffer_overflow();
+                    }
+                    screen_column += 2;
                 }
-                screen_column += 2;
+                screen_column = 9;  // Preparando a coluna inicial para a próxima linha;
             }
-            screen_column = 9;  // Preparando a coluna inicial para a próxima linha;
+            screen_row += 3;
         }
-        screen_row += 3;
+        sleep(1);
+        if(choose_color == 0)
+            color = COLOR_BLUE;
+        else if (choose_color == 1)
+            color = COLOR_GREEN;
+        else
+            color = COLOR_MAGENTA;
     }
-    while(button() == 0){}
 }
 
 int desenharBloco(int coluna, int linha, int color){
+    buffer_overflow();
     background_drawing(linha, coluna, color); 
+    buffer_overflow();
+    background_drawing(linha+1, coluna+1, color); 
+    buffer_overflow();
+    background_drawing(linha, coluna+1, color); 
+    buffer_overflow();
+    background_drawing(linha+1, coluna, color); 
 }
 
 int apagar_especifico(int linha, int coluna){
+    buffer_overflow();
     background_block_erase(linha, coluna);
     return 0;
 }
@@ -69,6 +88,7 @@ int apagar_especifico(int linha, int coluna){
 int apagar(){
       for (int coluna = 0; coluna < 80; coluna++){
         for (int linha = 0; linha < 60; linha ++){
+            buffer_overflow();
             background_block_erase(linha, coluna); 
         }
     }
@@ -81,13 +101,13 @@ void desenharCampo(){
     
     //loop para  percorrer todas as linhas para desenhar as bordas laterais
     for(int y=0; y <= LINHA; y++){
-        desenharBloco(0,y,COLOR_BLUE); //a borda esquerda
-        desenharBloco(COLUNA+1,y,COLOR_BLUE); // a borda direita 
+        desenharBloco(0,y*2,COLOR_BLUE); //a borda esquerda
+        desenharBloco((COLUNA+1)*2,y*2,COLOR_BLUE); // a borda direita 
     }   
 
     //percorre todas as colunas para desenhar a borda base
     for(int x=0;x<=COLUNA+1; x++){
-        desenharBloco(x,LINHA,COLOR_BLUE); //Lembrando que LINHA é a ultima linha 
+        desenharBloco(x*2,LINHA*2,COLOR_BLUE); //Lembrando que LINHA é a ultima linha 
     }
 
     //laço para percorrer toda a matriz para fazer os blocos fixo nela
@@ -95,24 +115,24 @@ void desenharCampo(){
         for (int x=0; x<COLUNA; x++){
             if(borda[y][x]){  // No caso, se tiver um valor positivo, ou seja, se tiver um bloco 
                 //Verificando se no ponto atual na matriz o valor é 1, ou seja, tem peça
-                desenharBloco(x+1,y,COLOR_GRAY);
+                desenharBloco((x+1)*2,y*2,COLOR_GRAY);
             }
             // Loop Infinito para Pausa:
-            while(pause){
-                if(button() == 1)
-                    pause = 1; // Se "KEY0" for pressionado novamente, retoma o jogo.
+            while(pausado){
+                if(button() == 2)
+                    pausado = 0; // Se "KEY0" for pressionado novamente, retoma o jogo.
             }
             if(button() == 1)
-                pause = 1; // KEY0 - Pausa o jogo
+                pausado = 1; // KEY0 - Pausa o jogo
         }
-    }\
+    }
 
     //Desenha o bloco da peça na posição correta do tabuleiro, passando por toda a matriz do bloco
     for(int i=0; i<4;i++){
         for(int j=0; j<4;j++){
             if(pecas[indice_peca][i][j]){ //Se tiver um valor positivo, eu desenho
                 //verificar que se na posição atual tem algum bloco, se sim ele precisa ser desenhado 
-                desenharBloco(coluna+ j, linha + i, COLOR_GREEN);
+                desenharBloco((coluna+ j+1)*2, (linha + i)*2, COLOR_GREEN);
             }
         }
     
@@ -201,7 +221,7 @@ int colisao(int x, int y, int indice_peca_atual) {
         for (int j = 0; j < 4; j++) {  // Percorre todos os blocos da peça
             if (pecas[indice_peca_atual][i][j]) {
                 // Verifica colisão com as bordas laterais e inferiores
-                if (y + i >= LINHA || x + j >= COLUNA || x + j < 0 || borda[y + i][x + j]) {
+                if (y + i >= LINHA|| x + j >= COLUNA || x + j< 0 || borda[y + i][x + j]) {
                     return 1;  // Retorna 1 se houver colisão
                 }
             }

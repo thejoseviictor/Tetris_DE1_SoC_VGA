@@ -3,6 +3,7 @@
 #include "jogabilidade.h"
 
 int main(){
+    physical_to_virtual();  // Mapeando os Endereços do VGA
     open_memory();
     GPIO_mapping();
     I2C0_mapping();
@@ -31,15 +32,19 @@ int main(){
                 linha = 0;
                 //Verifica se ouve colisão 
                 if(colisao(coluna,linha,indice_peca)){
+                    for(int row = 0; row < LINHA; row++){
+                        for(int column = 0; column < COLUNA; column++){
+                            borda[row][column] = 0;
+                        }
+                    }
                     draw_start_screen();
-                    break;
+                    playing = 0; // Fim de Jogo
                 }
             }
             desenharCampo();
             usleep(300 * 1000); // Controla a velocidade da queda
             exibir_pontos(pontuacao);
         }
-        playing = 0; // Fim de Jogo
         // Reinicia o jogo ao apertar o KEY0
         if(button() == 1){
             pontuacao = 0;

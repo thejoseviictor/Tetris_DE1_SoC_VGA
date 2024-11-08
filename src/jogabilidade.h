@@ -20,6 +20,7 @@
 #define COLUNA 10
 
 // Variáveis que serão usadas em outras bibliotecas:
+extern int borda[LINHA][COLUNA];
 extern int pontuacao;
 extern int indice_peca;
 extern int coluna;

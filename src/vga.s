@@ -272,6 +272,7 @@ buffer_overflow:
     PUSH {R0, LR}
     LDR R0, =virtual_address
     LDR R0, [R0]
+    LDR R0, [R0, #WRFULL]
     CMP R0, #1
     BEQ buffer_overflow
     POP {R0, LR}
