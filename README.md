@@ -265,6 +265,17 @@ Nessa seção será tratada a descrição da parte gráfica, movimentação, apr
 </p>
  
  O comportamento dos displays seguem a lógica que podemos chamar de "negativa", logo com o bit O o segmento pode ser ligado e com o bit 1 pode ser desligado, aplicando um nível lógico baixo ou alto nível lógico do FPGA, respectivamente.
+
+ No projeto 2, o código feito para a exibição da pontuação do jogo foi escrito em linguagem C e o limite da pontuação foi definido como 99 pontos. 
+ As funções utilizadas do arquivo "GPIO.c" são "return_decomposto" e "exibir_pontos". Na primeira função o valor da pontuação é decomposto em dezena e unidade, armazenados em um vetor e retornado para a segunda função. De acordo com os valores armazenados em cada célula do vetor e também através da lógica condicional formulada, os HEX's HEX4 e HEX3 recebem o respectivo offset em hexadecimal responsável pela exibição do número desejado.
+ Abaixo segue a correspondência binária e hexadecimal para cada número:
+
+ | Binário ( Lógica negativa)| Hexadecimal | Coluna Direita |
+|:---------------: |:-------------------:| :--------------:|
+| Item 1          | Item 1              | Item 1         |
+| Item 2          | Item 2              | Item 2         |
+| Item 3          | Item 3              | Item 3         |
+
   
 
   </div>  
