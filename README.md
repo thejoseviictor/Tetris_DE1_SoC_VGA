@@ -1,4 +1,4 @@
-<div align="center">
+<div align="justify">
 
   <h4>Universidade Estadual de Feira de Santana  
     
@@ -22,11 +22,11 @@
 
 </div>
 <p align="center">
-  <img src="Images/wtetris.jpeg" width = "600" />
+  <img src="Images/front11.jpeg" width = "600" />
   </p>
   <p align="center"><strong> </strong></p>
 
-<h2 align="center">Game inspirado no clássico Tetris, desenvolvido para o kit de desenvolvimento DE1-SoC utilizando linguagem C </h2>  
+<h2 align="center">Game inspirado no clássico Tetris, desenvolvido para o kit de desenvolvimento DE1-SoC utilizando linguagem C e Assembly </h2>  
 
 <br>
 <br>
@@ -36,11 +36,7 @@
 
   <div align="justify">
   
-  No mundo da computação, seja ele dividido em software ou hardware, muitas pessoas se utilizam e aproveitam das quase infinitas possibilidades de conhecimentos e          ferramentas para serem utilizadas no dia a dia de forma produtiva e eficiente para as mais diversas funcionalidades e objetivos.  
-
-  Uma das vertentes é a área de jogos, que hoje é considerada uma gigantesca parte do entretenimento e mercado global (que faturou cerca de $187,7 bilhões em 2023) . A     cada ano que passa, o mundo dos games se torna mais avançado, em quesitos de memória, gráfico, comunicação online e armazenamento em nuvem.  
-
-  Entretanto, a nossa inspiração para o projeto remota ao ano de 1984, quando o pesquisador soviético Alexey Pajitnov desenvolveu o seu primeiro modelo do Tetris.  
+  Seguindo o "Projeto 1: Tetris" , o "Projeto 2 : Assembly e VGA" teve como objetivo de desnvolvimento a utilização da linguagem Assembly para exibições gráficas.
 
   </div>
 
@@ -51,12 +47,13 @@
 
   <div align="justify">
   
-  O projeto PBL1 teve como objetivo a utilização dos conceitos aprendidos em arquitetura de computadores e sistemas digitais, de forma prática, para a recriação do  jogo   tetris, atendendo os seguintes requisitos mínimos:   
+  O projeto PBL2 teve como objetivo a utilização dos conceitos aprendidos em arquitetura de computadores e sistemas digitais, de forma prática, para a recriação do  jogo tetris, atendendo os seguintes requisitos mínimos:   
 
   * Utilizar o Kit de desenvolvimento DE1-SoC e os seus respectivos componentes;  
-  * O código deve ser escrito em linguagem C;  
+  * O código deve ser escrito em linguagem C, exceto a biblioteca de funções gráficas;  
   * Não é permitido o uso de bibliotecas para o acelerômetro;  
-  * O jogo deve pontuar e eliminar agrupamentos.  
+  * O jogo deve pontuar e eliminar agrupamentos
+  * Desenvolver uma biblioteca com funções gráficas essenciais para o processador gráfico, escrita em linguagem Assembly;
 
   </div>  
 
@@ -83,6 +80,8 @@ Os periféricos da placa DE1-SoC usados no projeto foram:
 * Accelerometer
 * Button 01
 * HPS Gigabit Ethernet
+* 7-Segment Displays
+* Button x4
   
   </div>
 
@@ -166,32 +165,10 @@ Nessa seção será tratada a descrição da parte gráfica, movimentação, apr
   <p align="center"><strong>Diagrama sobre a lógica de jogo</strong></p>
 
 <br>
-  <h3>- Parte visual e gráfica:</h2>  
+  <h3>- Bibliotca gráfica em Assembly: </h2>  
   <div align="justify">  
 
-  O jogo foi desenvolvido utilizando uma matriz para reproduzir o cenário, com várias funções criadas para implementar os elementos da interface do Tetris, bem como a lógica que o envolve. Em primeiro lugar foi desenvolvido as estruturas das peças criando uma matriz tridimensional, onde cada elemento do primeiro array faz referencia a um formato de uma elemento. <br>
-
-Inicialmente, vamos falar da função <strong> desenharBloco().</strong> Essa função tem como objetivo desenhar os blocos do cenário, recebendo como parâmetros a coluna, a linha e a cor do bloco. Considerando que o tabuleiro é uma estrutura lógica composta por linhas e colunas, e que, no monitor, ele ocupa uma quantidade de pixels, precisamos multiplicar os valores da coluna e da linha pelo tamanho da peça para transformar essas posições em coordenadas de pixels na tela. Se não fizermos isso, o bloco será representado apenas como um ponto, e não teremos o design do bloco preenchido.
-
-Nesse sentido, utilizamos a biblioteca <strong>video.h</strong> para exibir algo na tela do VGA. Para isso, empregamos a função <strong>video_box()</strong>, na qual passamos como parâmetros x1 e y1, que determinam o ponto onde o bloco começa em relação ao canto superior esquerdo das colunas e linhas. Também passamos x2 e y2, que representam o canto inferior direito, onde o bloco termina. Com isso, conseguimos criar a função básica para a elaboração de blocos na tela.
-
-A função desenharBlocoTetris() é semelhante à desenharBloco() com uma difenrença que ela desenha blocos com um efeito de espaço entre eles.
-
-A função <strong>desenharCampo()</strong> é responsável por desenhar a borda do jogo, os blocos que estão fixos e a peça em movimento. Para desenhar a borda do jogo, utilizamos a função desenharBloco(), mencionada anteriormente. Na coluna zero e na ultima coluna , colocamos um bloco laranja em cada linha por interação. Além disso, percorremos todas as colunas, posicionando um bloco laranja na última linha a cada iteração, formando assim as bordas do jogo.
-
-Além disso, para desenhar os blocos já fixados no tabuleiro do jogo, o processo foi simples. A matriz do jogo é inicialmente preenchida com zeros, e os blocos têm o valor de um. Ou seja, quando um bloco é fixado, o valor da matriz em uma linha e coluna específicas é alterado, deixando de ser zero. Assim, foi elaborado um loop que percorre toda a matriz, e quando o número um é encontrado, desenhamos um bloco cinza naquela posição.
-
-Para desenhar a peça que está caindo, percorremos toda a matriz da peça e, para cada valor positivo encontrado, desenhamos um bloco. Além disso, foi criada a exibição da pontuação por meio da função <strong>video_text()</strong>, que exibe um texto na tela.
-
-A função de colisão é responsável por garantir que a peça não ultrapasse as delimitações da borda. Essa função recebe a peça como parâmetro e, portanto, percorre todos os blocos da peça. Para cada bloco, verifica se há colisão com as bordas do tabuleiro, com a base ou com outra peça. Assim, foi elaborada uma condição que verifica se alguma parte da peça deseja ocupar uma posição que ultrapassa a borda inferior, a borda direita ou a borda esquerda, além de checar se a posição que a peça deseja ocupar já está ocupada por outra peça. Se houver colisão, a função retorna 1; caso contrário, retorna 0.
-
-Outrossim, a função de fixar a peça que está caindo funciona de maneira semelhante à função que fixa as outras peças já presentes. A diferença é que a posição onde a peça está, naquele momento, adquire o valor 1 na matriz do jogo.
-
-Além disso, existe a função de checagem de linhas, responsável por percorrer todas as linhas e verificar se alguma delas está completa com 1's (blocos). Se houver uma linha completa, ela é removida e os blocos que estão acima se deslocam para baixo. Assim, para cada linha completa o valor de pontuação é incrementado mais 1.
-
-Na função de descida, verifico se há colisão no próximo deslocamento da peça. Se não houver, incremento em um o valor do índice da linha da peça, fazendo-a se deslocar para baixo. No entanto, se houver colisão, a função de fixar a peça é chamada. Isso acontece porque, se existir alguma peça que impeça o deslocamento, significa que a peça em questão deve ser fixada, ou seja, não pode mais se mover, pois isso sobreporia outra peça. Após isso, a função de verificar linha também é chamada, pois, a cada vez que uma peça é fixada, é necessário checar se alguma linha está completa.
-
-A função mover é responsável pelo movimento lateral da peça. Ela analisa se a nova posição resultaria em uma colisão com outra peça ou com as bordas do cenário, por meio da função colisao(). Se não houver colisão, a posição da peça é atualizada, permitindo que ela se mova para o lado desejado. Caso contrário, a nova posição, que está armazenada em uma variável temporária, não é atualizada, e o movimento é impedido.  
+  ---
 
 <br>
 <br>
@@ -266,6 +243,33 @@ A função mover é responsável pelo movimento lateral da peça. Ela analisa se
   <br>
   <em>3. Fim de jogo.</em>
 </p>
+
+<br>
+<br>
+
+<br>
+  <h2>Exibição de pontuação e pausa do jogo: </h2>  
+  <div align="justify">  
+
+  Para ambas as funcionalidades do jogo, foi utilizada a GPIO - General-Purpose Input/Output (ou no português, entrada/saída de uso geral), estrutura da placa DE1-SoC que permite a comunicação com periféricos. E respectivamente para a exibição da pontuação e pausa do jogo foram utilizados o display de 7 segmentos e os botões.
+
+   <h3> - Display de 7 segmentos: </h3>  
+  <div align="justify">  
+
+ A placa DE1-SoC é formada por 6 displays de 7 segmentos mais ponto(.) que são organizados em 3 blocos, cada bloco com 2 pares de displays para exibição de números e caracteres. Cada unidade é nomeada de HEX5, HEX4, HEX3, HEX2, HEX1 e HEX0 (na ordem da esquerda para a direta) e cada segmento é identificado como HEXN[0], HEXN[1], HEXN[2], HEXN[3], HEXN[4], HEXN[5] e HEXN[6] (desconsiderando o ponto), como pode ser visto na imagem a seguir:
+
+<p align="center">
+  <img src="/Images/7display.png" alt="Apagamento de linha e pontuação" width="800"/>
+  <br>
+  <em>1. Conexões entre o display de 7 segmentos HEX0 e o Cyclone V SoC FPGA .</em>
+</p>
+ 
+ O comportamento dos displays seguem a lógica que podemos chamar de "negativa", logo com o bit O o segmento pode ser ligado e com o bit 1 pode ser desligado, aplicando um nível lógico baixo ou alto nível lógico do FPGA, respectivamente.
+  
+
+  </div>  
+
+
 
 <br>
 <br>
