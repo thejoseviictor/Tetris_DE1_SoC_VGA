@@ -4,14 +4,7 @@
 #define ADXL345_H
 
 // Chamadas das Bibliotecas:
-#include "stdint.h" // Para Inteiros de 8 e 16 bits
-#include <stdio.h> // Entrada e Saída, como "printf"
-#include <stdlib.h>
-#include "fcntl.h" // Para Manipulação de Arquivos
-#include "unistd.h" // Para Fechar Arquivos
-#include "time.h" // Função "sleep"
-#include "sys/mman.h"// Para Mapear Endereço Físico em Endereço Virtual
-#include <time.h>
+#include "jogabilidade.h"
 
 // Registradores do ADXL345:
 #define ADXL345_ADDRESS 0x53 // Endereço Base do Acelerômetro
@@ -25,6 +18,9 @@
 #define DATA_FORMAT 0x31
 #define DATAX0 0x32 // Byte Menos Significativo de X
 #define DATAX1 0x33 // Byte Mais Significativo de X
+
+// Variáveis que serão usadas em outras bibliotecas:
+extern int fd; // "fd": file descriptor;
 
 // Cabeçalho das Funções:
 void open_memory(void);
