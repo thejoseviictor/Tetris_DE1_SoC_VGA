@@ -156,7 +156,6 @@ Nessa seção será tratada a descrição da parte gráfica, movimentação, apr
 </div>
 
 <br>
-<br>
 
   </div>
 <p align="center">
@@ -165,18 +164,139 @@ Nessa seção será tratada a descrição da parte gráfica, movimentação, apr
   <p align="center"><strong>Diagrama sobre a lógica de jogo</strong></p>
 
 <br>
-  <h3>- Bibliotca gráfica em Assembly: </h2>  
+
+  <h3>- Biblioteca gráfica em Assembly: </h3>  
   <div align="justify">  
 
-  ---
+  A exibição gráfica, que no "Projeto 1: Tetris" foi feita utilizando a linguagem C e a biblioteca "video.h", agora foi feita utilizando a linguagem Assembly para a criação de uma biblioteca própria para a visualização do jogo. Dentro dessa biblioteca, estão as seguintes funções básicas para o desenvolvimento do jogo:
 
-<br>
+<h4>  . Função "physical_to_virtual" : </h4>
+  <div align="justify">
+
+  Função responsável pelo mapeamento virtual do endereço físico, para uso geral em todos os processos gráficos necessários para a jogabilidade do Tetris. Os endereços base são colocados nos registradores R0, R1, R2, R3, R4, R5, R7 e LR, que são inicialmente salvos na pilha e após o agrupamento e retorno do endereço virtual para uma variavel global chamada "virtual_address" , são todos removidos da pilha.
+
+  <p align="center">
+  <img src="Images/physical_to_virtual.png" width = "600" />
+  </p>
+  <p align="center"><strong>Código assembly da função "physical_to_virtual" </strong></p>
+
+  </div>
+
+<h4>  . Função "unmap_memory" : </h4>
+  <div align="justify">
+
+  Função responsável por remover o endereço virtual mapeado da memória e fechar o "/dev/mem". Nessa função os endereços atribuidos aos registradores R0, R1, R7 e LR, salvos na pilha, são limpos. Posteriormente o "/dev/mem" é fechado, os registradores utilizados são removidos da pilha e a função é encerrada.
+
+  <p align="center">
+  <img src="Images/unmap_memory.png" width = "600" />
+  </p>
+  <p align="center"><strong>Código assembly da função "unmap_memory" </strong></p>
+  
+  </div>
+
+   <h4>  . Função "buffer_overflow" : </h4>
+  <div align="justify">
+
+  Função responsável por analisar os buffers de "DATA_A" e "DATA_B" e evitar o overflow desses. Inicialmente ocorre o armazenamento dos registradores R0 e LR na pilha, o endereço virtual é atribuído a R0, compara-se se R0 é igual a 1 (indica overflow) e entra dentro de um looping até o valor mudar para 0 (sem overflow). Após sair do looping,os registradores são removidos da pilha e a função é encerrada.
+
+   <p align="center">
+  <img src="Images/buffer_overflow.png" width = "600" />
+  </p>
+  <p align="center"><strong>Código assembly da função "buffer_overflow" </strong></p>
+
+  </div>
+
+  <h4>  . Função "background_color" : </h4>
+  <div align="justify">
+
+  Função responsável por mudar a cor do background (plano de fundo da tela). Primeiramente os registradores R0, R1, R2, R3, R9 e LR são salvos na pilha, após isso a função "buffer_overflow" analisa o buffer, o "DATA_A" e "DATA_B" são preenchidos, a cor de fundo é definido e por último os registradores são removidos da pilha e ocorre a saída da função.
+
+  <p align="center">
+  <img src="Images/background_color.png" width = "600" />
+  </p>
+  <p align="center"><strong>Código assembly da função "background_color" </strong></p>
+
+
+  <h4>  . Função "background_drawing" : </h4>
+  <div align="justify">
+
+  Função que desenha o background com uma cor definida na função "background_color" e que tem em R0, R1, R2 , respectivamente, a coordenada da linha, a coordenada da coluna e a cor. Inicialmente os registradores R0, R1, R2, R3, R4 e LR são armaznados na pilha, o buffer é analisado, as constantes são definidas, o cálculo da posição é definido por "R0 = (linha * 80) + coluna", o agrupamento e carregamnto do endreço virtual é realizado para que o background ser exibido. Por ultimo os registradores são removidos da pilha e a função é encerrada.
+
+<p align="center">
+  <img src="Images/background_drawing.png" width = "600" />
+  </p>
+  <p align="center"><strong>Código assembly da função "background_drawing" </strong></p>
+  </div>
+
+  <h4>  . Função "background_block_erase" : </h4>
+  <div align="justify">
+
+  Função que realiza o apagamento do backgrounde que segue a mesma lógica da função "background_drawing", com a diferença que a cor definida é a mesma cor base do background, para assim as exibições serem encobertas e o processo de limpeza seja realizado.
+
+  <p align="center">
+  <img src="Images/background_block_erase.png" width = "600" />
+  </p>
+  <p align="center"><strong>Código assembly da função "background_block_erase" </strong></p>
+
+  </div>
+
+  <h4>  . Função "draw_polygon" : </h4>
+  <div align="justify">
+
+  Função responsável por deesenhar polígonos. Os registradores utilizados são o R0(Endereço do Polígono), R1(Coordenada de Referência da Linha), R2(Coordenada de Referência da Coluna), R3(Tamanho), R4(Cor), R5(Tipo d polígono: Quadrado ou Triângulo), R7 e LR, a partir de R4 os registradores são armazenados na pilha. Após isso o buffer é analisado e as informações são agrupadas para assim definir as características do polígono, o endereço virtual é passado e o polígono é exibido. Ao final, os registradores(R4, R5, R7 e LR) são removidos da pilha e a função é encerrada.
+
+   <p align="center">
+  <img src="Images/draw_polygon.png" width = "600" />
+  </p>
+  <p align="center"><strong>Código assembly da função "draw_polygon" </strong></p>
+
+  </div>
+
+  <h4>  . Função "set_sprite" : </h4>
+  <div align="justify">
+
+  Função que define as informações caracteristicas do sprite e ao final o exibe, segue uma lógica parecida com a função "draw_polygon". De início, armazena os registradores R4 e LR na pilha, após isso o buffer é analisado e há o agrupamento das informações definidas nos registradores R0,R1, R2, R3 e R4 e exibe o sprite. Ao final, os registradores são removidos da pilha e a função é encerrada.
+
+  <p align="center">
+  <img src="Images/set_sprite.png" width = "600" />
+  </p>
+  <p align="center"><strong>Código assembly da função ""set_sprite" </strong></p>
+
+  </div>
+
+  
 <br>
 
  <p align="center">
   <img src="Images/Peças do jogo.jpg" width = "650" />
   </p>
   <p align="center"><strong>6 peças utilizadas no projeto.</strong></p>
+
+<br>
+  
+  <p align="center">
+  <img src="/Images/Tela de inicio.gif" alt="Tela de início do jogo" width="600"/>
+  <br>
+  <em>Tela de início do jogo.</em>
+</p>
+
+<br>
+  
+  <p align="center">
+  <img src="/Images/Completar linha.gif" alt="Completando linha" width="600"/>
+  <br>
+  <em>Completando linha.</em>
+</p>
+
+<br>
+  
+  <p align="center">
+  <img src="/Images/Gameover.gif" alt="Game over e reiniciar jogo" width="600"/>
+  <br>
+  <em>Game over e reiniciar jogo.</em>
+</p>
+
+<br>
 
   </div>  
 
@@ -215,40 +335,13 @@ Nessa seção será tratada a descrição da parte gráfica, movimentação, apr
   Lê e retorna os valores de medição do eixo X em um inteiro de 16 bits com sinal.<br>
 
   Diante do exposto, a função principal faz a leitura do valor do eixo x, para valores maiores do que "+100g" a peça se moverá para a direita, para valores menores do que "-100g" a peça se moverá para a esquerda.
-</div>
-
-<br>
-<br>
 
 </div>
 
-<p align="center">
-  <img src="/Images/Apagamento de linha e pontuação.gif" alt="Apagamento de linha e pontuação" width="800"/>
-  <br>
-  <em>1. Apagamento de linha e pontuação.</em>
-</p>
+</div>
 
 <br>
-
-<p align="center">
-  <img src="/Images/Pausar-Continuar.gif" alt="Pausar-Continuar" width="800"/>
-  <br>
-  <em>2. Pausar e Continuar.</em>
-</p>
-
-<br>
-
-<p align="center">
-  <img src="/Images/Fim de jogo.gif" alt="Fim de jogo" width="800"/>
-  <br>
-  <em>3. Fim de jogo.</em>
-</p>
-
-<br>
-<br>
-
-<br>
-  <h2>Exibição de pontuação e pausa do jogo: </h2>  
+  <h2>Exibição de pontuação e início pausa do jogo: </h2>  
   <div align="justify">  
 
   Para ambas as funcionalidades do jogo, foi utilizada a GPIO - General-Purpose Input/Output (ou no português, entrada/saída de uso geral), estrutura da placa DE1-SoC que permite a comunicação com periféricos. E respectivamente para a exibição da pontuação e pausa do jogo foram utilizados o display de 7 segmentos e os botões.
@@ -256,30 +349,78 @@ Nessa seção será tratada a descrição da parte gráfica, movimentação, apr
    <h3> - Display de 7 segmentos: </h3>  
   <div align="justify">  
 
- A placa DE1-SoC é formada por 6 displays de 7 segmentos mais ponto(.) que são organizados em 3 blocos, cada bloco com 2 pares de displays para exibição de números e caracteres. Cada unidade é nomeada de HEX5, HEX4, HEX3, HEX2, HEX1 e HEX0 (na ordem da esquerda para a direta) e cada segmento é identificado como HEXN[0], HEXN[1], HEXN[2], HEXN[3], HEXN[4], HEXN[5] e HEXN[6] (desconsiderando o ponto), como pode ser visto na imagem a seguir:
+ A placa DE1-SoC tem 6 displays de 7 segmentos mais ponto(.) que são organizados em 3 blocos, cada bloco com 2 pares de displays para exibição de números e caracteres. Cada unidade é nomeada de HEX5, HEX4, HEX3, HEX2, HEX1 e HEX0 (na ordem da esquerda para a direta) e cada segmento é identificado como HEXN[0], HEXN[1], HEXN[2], HEXN[3], HEXN[4], HEXN[5] e HEXN[6] (desconsiderando o ponto), como pode ser visto na imagem a seguir:
 
 <p align="center">
   <img src="/Images/7display.png" alt="Apagamento de linha e pontuação" width="800"/>
   <br>
-  <em>1. Conexões entre o display de 7 segmentos HEX0 e o Cyclone V SoC FPGA .</em>
+  <em>Conexões entre o display de 7 segmentos HEX0 e o Cyclone V SoC FPGA .</em>
 </p>
  
  O comportamento dos displays seguem a lógica que podemos chamar de "negativa", logo com o bit O o segmento pode ser ligado e com o bit 1 pode ser desligado, aplicando um nível lógico baixo ou alto nível lógico do FPGA, respectivamente.
 
  No projeto 2, o código feito para a exibição da pontuação do jogo foi escrito em linguagem C e o limite da pontuação foi definido como 99 pontos. 
- As funções utilizadas do arquivo "GPIO.c" são "return_decomposto" e "exibir_pontos". Na primeira função o valor da pontuação é decomposto em dezena e unidade, armazenados em um vetor e retornado para a segunda função. De acordo com os valores armazenados em cada célula do vetor e também através da lógica condicional formulada, os HEX's HEX4 e HEX3 recebem o respectivo offset em hexadecimal responsável pela exibição do número desejado.
- Abaixo segue a correspondência binária e hexadecimal para cada número:
+ As funções utilizadas do arquivo "GPIO.c" são "return_decomposto" e "exibir_pontos". Na primeira função o valor da pontuação é decomposto em dezena e unidade, armazenados em um vetor e retornado para a segunda função. De acordo com os valores armazenados em cada célula do vetor e também através da lógica condicional formulada, os HEX's HEX4 e HEX3 recebem os respectivos offsets em hexadecimal responsável pela exibição do número desejado.
+ Abaixo seguem a correspondência binária e hexadecimal para cada número e uma imagem de exibição da pontuação quando o valor foi acrescido :
 
- | Binário ( Lógica negativa)| Hexadecimal | Coluna Direita |
+<div align="center">
+  
+| Dígito | Binário ( Lógica negativa) | Hexadecimal |
 |:---------------: |:-------------------:| :--------------:|
-| Item 1          | Item 1              | Item 1         |
-| Item 2          | Item 2              | Item 2         |
-| Item 3          | Item 3              | Item 3         |
+| Segmentos apagados | 11111111 | FF |
+| 0 | 11000000 | C0 |
+| 1 | 11111001 | F9 |
+| 2 | 110100100 | 1A4 |
+| 3 | 10110000 | B0 |
+| 4 | 10011001 | 99 |
+| 5 | 10010010 | 92 |
+| 6 | 10000010 | 82 |
+| 7 | 11111000 | F8 |
+| 8 | 10000000 | 80 |
+| 9 | 10010000 | 90 |
 
+</div> 
 
-  </div>  
+<br>
+<br>
 
+<p align="center">
+  <img src="Images/Pontuação.jpeg" alt="Fim de jogo" width="800"/>
+  <br>
+  <em>Exibição de pontos no display.</em>
+</p> 
 
+</div>  
+
+ <h3> - Botões: </h3>  
+  <div align="justify">
+
+A placa DE1-SoC tem 4 botões, nomeados de KEY0, KEY1, KEY2 E KEY3 (no sentido direita para a esquerda). Assim como os displays de 7 segmentos, os botões também seguem a lógica "negativa", e quando ele é pressionado retorna 0 e quando não é retorna 1. O conjunto de 4 bits(0x1111) define quais botões são pressionados no momento.
+
+Abaixo há a relação binária-hexadcimal entre as saídas dos botões ao estarem ou não pressionados:
+<br>
+
+<div align="center">
+  
+  | Botão | Binário ( Lógica negativa) | Hexadecimal |
+|:---------------: |:-------------------:| :--------------:|
+| Nenhum botão pressionado | 1111 | F |
+| 0 | 1110 | E |
+| 1 | 1101 | D |
+| 2 | 1011 | B |
+| 3 | 0111 | 7 |
+
+</div>
+
+No projeto 2 esses periféricos, definidos na função "button" foram usados para criar as lógicas de iniciar, pausar e continuar jogabilidade no jogo tetris e foram escritas em linguagem C. Na tela de início, ao pressionar o KEY0, o jogo ínicia. Já na execução da jogabilidade, caso o KEY0 seja pressionado ocorre a execução da pausa. Para retornar a continuidade do jogo foi usada a KEY1, quando ela é pressionada o jogo volta ao seu último estado de execução.
+
+<p align="center">
+  <img src="/Images/Pausacontinua.gif" alt="Pausa e continuidade do jogo" width="800"/>
+  <br>
+  <em>Pausa e continuidade do jogo.</em>
+</p>
+
+</div>
 
 <br>
 <br>
@@ -287,9 +428,7 @@ Nessa seção será tratada a descrição da parte gráfica, movimentação, apr
 <h2>Conclusões</h2>
 <div align="justify">
 
-  Como resultado, obteve-se um jogo de Tetris funcional implementado na DE1-SoC Cyclone V , utilizando o acelerômetro ADXL345 para controlar a movimentação das peças. O jogo permite interagir de forma intuitiva, movendo as peças para a esquerda ou direita e realizando rotações, dependendo da inclinação do dispositivo.
-  Todos os requisitos foram cumpridos.
-  Não houve gestão de tempo suficiente para implementar funcionalidades a mais.
+Como resultado, obteve-se um jogo de Tetris funcional implementado na DE1-SoC Cyclone V , utilizando o acelerômetro ADXL345 para controlar a movimentação das peças e a criação da biblioteca de processamento gráfico basseada na linguagem Assembly. O jogo permite interagir de forma intuitiva, movendo as peças para a esquerda ou direita e realizando rotações, dependendo da inclinação do dispositivo. Todos os requisitos foram cumpridos. Não houve gestão de tempo suficiente para implementar funcionalidades a mais.
 
 </div>
 
