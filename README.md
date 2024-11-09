@@ -397,6 +397,14 @@ Nessa seção será tratada a descrição da parte gráfica, movimentação, apr
 
 A placa DE1-SoC tem 4 botões, nomeados de KEY0, KEY1, KEY2 E KEY3 (no sentido direita para a esquerda). Assim como os displays de 7 segmentos, os botões também seguem a lógica "negativa", e quando ele é pressionado retorna 0 e quando não é retorna 1. O conjunto de 4 bits(0x1111) define quais botões são pressionados no momento.
 
+<p align="center">
+  <img src="/Images/button.png" alt="Conexões entre os LEDs e o Cyclone V SoC FPGA
+ogo" width="600"/>
+  <br>
+  <em>Conexões entre os LEDs e o Cyclone V SoC FPGA
+.</em>
+</p>
+
 Abaixo há a relação binária-hexadcimal entre as saídas dos botões ao estarem ou não pressionados:
 <br>
 
